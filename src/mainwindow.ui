@@ -11,10 +11,10 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Inventario de Autos</string>
   </property>
-  <widget class="QMainWindow" name="mainWindow"/>
-  <widget class="QMenuBar" name="menuBar">
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="MenuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -23,12 +23,12 @@
      <height>23</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuMenu_bar">
+   <widget class="QMenu" name="Menu_Opcion1">
     <property name="title">
-     <string>Menu bar</string>
+     <string>Opciones</string>
     </property>
    </widget>
-   <addaction name="menuMenu_bar"/>
+   <addaction name="Menu_Opcion1"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
