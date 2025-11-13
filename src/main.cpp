@@ -1,11 +1,11 @@
 #include <QApplication>
-#include <QMainWindow>
+#include "mainwindow.h"
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    QMainWindow mainWindow;
+    MainWindow mainWindow;
     mainWindow.setWindowTitle("Inventario-de-Autos");
     mainWindow.resize(600, 400);
     mainWindow.show();
