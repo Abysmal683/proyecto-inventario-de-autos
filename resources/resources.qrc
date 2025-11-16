@@ -1,0 +1,6 @@
+<RCC>
+    <qresource lang="spanish" prefix="/">
+        <file>icons/grillo.jpg</file>
+        <file>logos/buho.jpg</file>
+    </qresource>
+</RCC>
