@@ -15,5 +15,4 @@ file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 file(MAKE_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 
 # Incluye tus carpetas de código
-include_directories(include)
 add_subdirectory(src)

@@ -1,14 +1,33 @@
-# --- src/CMakeLists.txt ---
-# Activar generación automática de Qt
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
-    ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
-    ${CMAKE_SOURCE_DIR}/include/*.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/*.ui
+set(CMAKE_AUTOUIC_SEARCH_PATHS
+    ${CMAKE_SOURCE_DIR}/ui
 )
-add_executable(${PROJECT_NAME} ${SOURCES})
-target_link_libraries(${PROJECT_NAME} Qt6::Widgets)
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include)
+
+file(GLOB_RECURSE CPP_SOURCES CONFIGURE_DEPENDS
+    ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
+)
+
+file(GLOB_RECURSE HEADER_SOURCES CONFIGURE_DEPENDS
+    ${CMAKE_SOURCE_DIR}/include/*.h
+)
+
+file(GLOB UI_FILES
+    ${CMAKE_SOURCE_DIR}/ui/*.ui
+)
+
+add_executable(${PROJECT_NAME}
+    ${CPP_SOURCES}
+    ${HEADER_SOURCES}
+    ${UI_FILES}
+)
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+target_link_libraries(${PROJECT_NAME}
+    Qt6::Widgets
+)
