@@ -2,7 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "welcomescreen.h"
+
+class WelcomeScreen;
+class RegistleScreen;
 
 namespace Ui {
 class MainWindow;
@@ -18,6 +20,11 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+    WelcomeScreen *welcomeScreen;
+    RegistleScreen *registleScreen;
+private slots:
+    void goToRegister();
 };
 
 #endif // MAINWINDOW_H

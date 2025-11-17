@@ -15,6 +15,9 @@ public:
     explicit WelcomeScreen(QWidget *parent = nullptr);
     ~WelcomeScreen();
 
+signals:
+    void goRegisterRequested();
+
 private:
     Ui::WelcomeScreen *ui;
 };
