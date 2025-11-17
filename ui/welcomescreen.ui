@@ -6,13 +6,74 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>599</width>
+    <height>344</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="1">
+    <layout class="QHBoxLayout" name="horizontal_layout_datos">
+     <property name="spacing">
+      <number>6</number>
+     </property>
+     <property name="sizeConstraint">
+      <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
+     </property>
+     <item>
+      <widget class="QPushButton" name="push_button_datos_generales">
+       <property name="text">
+        <string>datos generales</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="push_button_datos_tecnicos">
+       <property name="text">
+        <string>datos tecnicos</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="push_button_registros">
+       <property name="text">
+        <string>registros</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="1">
+    <layout class="QFormLayout" name="formLayout"/>
+   </item>
+   <item row="1" column="0">
+    <layout class="QVBoxLayout" name="vertical_layout_registros">
+     <item>
+      <widget class="QPushButton" name="push_button_nuevo_registro">
+       <property name="text">
+        <string>nuevo registro</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="push_button_actualizar_guardar">
+       <property name="text">
+        <string>actualizar y guardar</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="push_button_imprimir">
+       <property name="text">
+        <string>imprimir</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>
