@@ -2,12 +2,12 @@
 #include "ui_imprimirscreen.h"
 
 ImprimirScreen::ImprimirScreen(QWidget *parent)
-    : QWidget(parent)
+    : QDialog(parent)
     , ui(new Ui::ImprimirScreen)
 {
     ui->setupUi(this);
-    setWindowModality(Qt::ApplicationModal);
-    setAttribute(Qt::WA_DeleteOnClose);
+    if(parent)
+        move(parent->geometry().center() - rect().center());
 }
 
 ImprimirScreen::~ImprimirScreen()

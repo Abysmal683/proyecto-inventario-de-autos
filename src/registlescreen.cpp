@@ -6,6 +6,9 @@ RegistleScreen::RegistleScreen(QWidget *parent)
     , ui(new Ui::RegistleScreen)
 {
     ui->setupUi(this);
+    connect(ui->pushButtonRegresar, &QPushButton::clicked, this, [=](){
+        emit goWelcomeRequested();
+    });
 }
 
 RegistleScreen::~RegistleScreen()

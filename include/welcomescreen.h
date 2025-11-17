@@ -17,6 +17,7 @@ public:
 
 signals:
     void goRegisterRequested();
+    void finishMainRequested();
 private slots:
     void on_pushButtonImprimir_clicked();
 private:

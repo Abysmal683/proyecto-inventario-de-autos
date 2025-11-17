@@ -9,10 +9,13 @@ WelcomeScreen::WelcomeScreen(QWidget *parent)
     connect(ui->pushButtonRegistros, &QPushButton::clicked, this, [=](){
         emit goRegisterRequested();
     });
+    connect(ui->pushButtonFinalizar,&QPushButton::clicked,this,[=](){
+       emit finishMainRequested();
+    });
 }
 void WelcomeScreen::on_pushButtonImprimir_clicked(){
-    ImprimirScreen *imprimirScreen =new ImprimirScreen(this);
-    imprimirScreen->show();
+    ImprimirScreen imprimirScreen(this);
+    imprimirScreen.exec();
 }
 WelcomeScreen::~WelcomeScreen()
 {

@@ -1,13 +1,13 @@
 #ifndef IMPRIMIRSCREEN_H
 #define IMPRIMIRSCREEN_H
 
-#include <QWidget>
+#include <QDialog>
 
 namespace Ui {
 class ImprimirScreen;
 }
 
-class ImprimirScreen : public QWidget
+class ImprimirScreen : public QDialog
 {
     Q_OBJECT
 

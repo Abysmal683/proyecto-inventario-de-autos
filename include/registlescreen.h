@@ -14,6 +14,8 @@ class RegistleScreen : public QWidget
 public:
     explicit RegistleScreen(QWidget *parent = nullptr);
     ~RegistleScreen();
+signals:
+    void goWelcomeRequested();
 
 private:
     Ui::RegistleScreen *ui;

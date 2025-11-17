@@ -25,6 +25,9 @@ private:
     RegistleScreen *registleScreen;
 private slots:
     void goToRegister();
+    void finish();
+    void goToWelcome();
+
 };
 
 #endif // MAINWINDOW_H
