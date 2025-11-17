@@ -17,7 +17,8 @@ public:
 
 signals:
     void goRegisterRequested();
-
+private slots:
+    void on_pushButtonImprimir_clicked();
 private:
     Ui::WelcomeScreen *ui;
 };

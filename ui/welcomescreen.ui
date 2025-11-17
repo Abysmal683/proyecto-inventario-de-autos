@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>536</width>
-    <height>318</height>
+    <width>530</width>
+    <height>405</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -47,7 +47,7 @@
       <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
      </property>
      <item>
-      <widget class="QLabel" name="imagen_logo">
+      <widget class="QLabel" name="imagenLogo">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -78,7 +78,7 @@
       </widget>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="vertical_layout_registros">
+      <layout class="QVBoxLayout" name="verticalLayoutRegistros">
        <property name="spacing">
         <number>12</number>
        </property>
@@ -86,7 +86,7 @@
         <enum>QLayout::SizeConstraint::SetMinAndMaxSize</enum>
        </property>
        <item alignment="Qt::AlignmentFlag::AlignTop">
-        <widget class="QPushButton" name="push_button_nuevo_registro">
+        <widget class="QPushButton" name="pushButtonNuevoRegistro">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -99,7 +99,7 @@
         </widget>
        </item>
        <item alignment="Qt::AlignmentFlag::AlignTop">
-        <widget class="QPushButton" name="push_button_actualizar_guardar">
+        <widget class="QPushButton" name="pushButtonActualizarGuardar">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -112,7 +112,7 @@
         </widget>
        </item>
        <item alignment="Qt::AlignmentFlag::AlignTop">
-        <widget class="QPushButton" name="push_button_imprimir">
+        <widget class="QPushButton" name="pushButtonImprimir">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -155,7 +155,7 @@
         <enum>QLayout::SizeConstraint::SetMinimumSize</enum>
        </property>
        <item alignment="Qt::AlignmentFlag::AlignTop">
-        <widget class="QPushButton" name="push_button_datos_generales">
+        <widget class="QPushButton" name="pushButtonDatosGenerales">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>1</horstretch>
@@ -168,7 +168,7 @@
         </widget>
        </item>
        <item alignment="Qt::AlignmentFlag::AlignTop">
-        <widget class="QPushButton" name="push_button_datos_tecnicos">
+        <widget class="QPushButton" name="pushButtonDatosTecnicos">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>1</horstretch>
@@ -181,7 +181,7 @@
         </widget>
        </item>
        <item alignment="Qt::AlignmentFlag::AlignTop">
-        <widget class="QPushButton" name="push_button_registros">
+        <widget class="QPushButton" name="pushButtonRegistros">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>1</horstretch>
@@ -215,7 +215,7 @@
           <number>6</number>
          </property>
          <item row="0" column="0">
-          <widget class="QLabel" name="label_5">
+          <widget class="QLabel" name="labelPropietario">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -228,7 +228,7 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLineEdit" name="lineEdit_2">
+          <widget class="QLineEdit" name="lineEditPropietario">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>1</horstretch>
@@ -238,7 +238,7 @@
           </widget>
          </item>
          <item row="1" column="0">
-          <widget class="QLabel" name="label_2">
+          <widget class="QLabel" name="labelVin">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -251,7 +251,7 @@
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QLineEdit" name="lineEdit_4">
+          <widget class="QLineEdit" name="lineEditVin">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>1</horstretch>
@@ -261,7 +261,7 @@
           </widget>
          </item>
          <item row="2" column="0">
-          <widget class="QLabel" name="label_7">
+          <widget class="QLabel" name="labelMarca">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -274,7 +274,7 @@
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QLineEdit" name="lineEdit_5">
+          <widget class="QLineEdit" name="lineEditMarca">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>1</horstretch>
@@ -284,7 +284,7 @@
           </widget>
          </item>
          <item row="3" column="0">
-          <widget class="QLabel" name="label_8">
+          <widget class="QLabel" name="labelModelo">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -297,7 +297,7 @@
           </widget>
          </item>
          <item row="3" column="1">
-          <widget class="QLineEdit" name="lineEdit_6">
+          <widget class="QLineEdit" name="lineEditModelo">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>1</horstretch>
@@ -307,7 +307,7 @@
           </widget>
          </item>
          <item row="4" column="0">
-          <widget class="QLabel" name="label_6">
+          <widget class="QLabel" name="labelEpoca">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -320,7 +320,7 @@
           </widget>
          </item>
          <item row="4" column="1">
-          <widget class="QLineEdit" name="lineEdit_7">
+          <widget class="QLineEdit" name="lineEditEpoca">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>1</horstretch>
@@ -330,7 +330,7 @@
           </widget>
          </item>
          <item row="5" column="0">
-          <widget class="QLabel" name="label_4">
+          <widget class="QLabel" name="labelMatricula">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -343,7 +343,7 @@
           </widget>
          </item>
          <item row="5" column="1">
-          <widget class="QLineEdit" name="lineEdit_8">
+          <widget class="QLineEdit" name="lineEditMatricula">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>1</horstretch>
@@ -353,7 +353,7 @@
           </widget>
          </item>
          <item row="6" column="0">
-          <widget class="QLabel" name="label_3">
+          <widget class="QLabel" name="labelEstado">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -366,7 +366,7 @@
           </widget>
          </item>
          <item row="6" column="1">
-          <widget class="QLineEdit" name="lineEdit_3">
+          <widget class="QLineEdit" name="lineEditEstado">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>1</horstretch>
