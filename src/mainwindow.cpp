@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "welcomescreen.h"
-#include "registlescreen.h"
+#include "welcomewidget.h"
+#include "datatablewidget.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -10,37 +10,37 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     // Crear widgets (pantallas)
-    welcomeScreen = new WelcomeScreen(this);
-    registleScreen = new RegistleScreen(this);
+    welcomeWidget = new WelcomeWidget(this);
+    dataTableWidget = new DataTableWidget(this);
 
     // Agregar pantallas al StackedWidget
-    ui->stackedWidget->addWidget(welcomeScreen);
-    ui->stackedWidget->addWidget(registleScreen);
+    ui->stackedWidget->addWidget(welcomeWidget);
+    ui->stackedWidget->addWidget(dataTableWidget);
 
-    // Señal desde WelcomeScreen → cambiar pantalla a register
-    connect(welcomeScreen, &WelcomeScreen::goRegisterRequested,
-            this, &MainWindow::goToRegister);
+    // Señal desde WelcomeWidget → cambiar pantalla a datatable
+    connect(welcomeWidget, &WelcomeWidget::goDataTableWidgetRequested,
+            this, &MainWindow::goToDataTableWidget);
     // Señal desde register → cambiar pantalla a welcome
-    connect(registleScreen, &RegistleScreen::goWelcomeRequested,
-            this, &MainWindow::goToWelcome);
+    connect(dataTableWidget, &DataTableWidget::goWelcomeWidgetRequested,
+            this, &MainWindow::goToWelcomeWidget);
     // finalizar proceso
-    connect(welcomeScreen, &WelcomeScreen::finishMainRequested,
+    connect(welcomeWidget, &WelcomeWidget::finishMainWindowRequested,
             this, &MainWindow::finish);
 
     // Mostrar la pantalla inicial
-    ui->stackedWidget->setCurrentWidget(welcomeScreen);
+    ui->stackedWidget->setCurrentWidget(welcomeWidget);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
-
-void MainWindow::goToRegister(){
-    ui->stackedWidget->setCurrentWidget(registleScreen);
+//funciones que realiza las accones por las senales entrantes
+void MainWindow::goToDataTableWidget(){
+    ui->stackedWidget->setCurrentWidget(dataTableWidget);
 }
-void MainWindow::goToWelcome(){
-    ui->stackedWidget->setCurrentWidget(welcomeScreen);
+void MainWindow::goToWelcomeWidget(){
+    ui->stackedWidget->setCurrentWidget(welcomeWidget);
 }
 void MainWindow::finish(){
     close();

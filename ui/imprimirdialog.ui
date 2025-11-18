@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ImprimirScreen</class>
- <widget class="QDialog" name="ImprimirScreen">
+ <class>ImprimirDialog</class>
+ <widget class="QDialog" name="ImprimirDialog">
   <property name="geometry">
    <rect>
     <x>0</x>

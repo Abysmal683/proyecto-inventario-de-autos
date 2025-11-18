@@ -3,8 +3,8 @@
 
 #include <QMainWindow>
 
-class WelcomeScreen;
-class RegistleScreen;
+class WelcomeWidget;
+class DataTableWidget;
 
 namespace Ui {
 class MainWindow;
@@ -21,12 +21,12 @@ public:
 private:
     Ui::MainWindow *ui;
 
-    WelcomeScreen *welcomeScreen;
-    RegistleScreen *registleScreen;
+    WelcomeWidget *welcomeWidget;
+    DataTableWidget *dataTableWidget;
 private slots:
-    void goToRegister();
+    void goToDataTableWidget();
     void finish();
-    void goToWelcome();
+    void goToWelcomeWidget();
 
 };
 
