@@ -2,7 +2,7 @@
 #include "ui_infodialog.h"
 
 InfoDialog::InfoDialog(QWidget *parent)
-    : QWidget(parent)
+    : QDialog(parent)
     , ui(new Ui::InfoDialog)
 {
     ui->setupUi(this);
