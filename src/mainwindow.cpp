@@ -14,12 +14,14 @@ MainWindow::MainWindow(QWidget *parent)
     dataTableWidget = new DataTableWidget(this);
 
     // Agregar pantallas al StackedWidget
-    ui->stackedWidget->addWidget(welcomeWidget);
-    ui->stackedWidget->addWidget(dataTableWidget);
+    ui->stackedWidgetPantallas->addWidget(welcomeWidget);
+    ui->stackedWidgetPantallas->addWidget(dataTableWidget);
 
     // Señal desde WelcomeWidget → cambiar pantalla a datatable
     connect(welcomeWidget, &WelcomeWidget::goDataTableWidgetRequested,
             this, &MainWindow::goToDataTableWidget);
+    connect(welcomeWidget, &WelcomeWidget::goDataTableWidgetAndResearchRequested,
+            this, &MainWindow::goToDataTableWidgetAndResearch);
     // Señal desde register → cambiar pantalla a welcome
     connect(dataTableWidget, &DataTableWidget::goWelcomeWidgetRequested,
             this, &MainWindow::goToWelcomeWidget);
@@ -28,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
             this, &MainWindow::finish);
 
     // Mostrar la pantalla inicial
-    ui->stackedWidget->setCurrentWidget(welcomeWidget);
+    ui->stackedWidgetPantallas->setCurrentWidget(welcomeWidget);
 }
 
 MainWindow::~MainWindow()
@@ -37,10 +39,14 @@ MainWindow::~MainWindow()
 }
 //funciones que realiza las accones por las senales entrantes
 void MainWindow::goToDataTableWidget(){
-    ui->stackedWidget->setCurrentWidget(dataTableWidget);
+    ui->stackedWidgetPantallas->setCurrentWidget(dataTableWidget);
+}
+void MainWindow::goToDataTableWidgetAndResearch(){
+// ui->stackedWidgetPantallas->setCurrentWidget(dataTableWidget);
+    goToDataTableWidget();
 }
 void MainWindow::goToWelcomeWidget(){
-    ui->stackedWidget->setCurrentWidget(welcomeWidget);
+    ui->stackedWidgetPantallas->setCurrentWidget(welcomeWidget);
 }
 void MainWindow::finish(){
     close();

@@ -18,8 +18,7 @@ public:
 signals:
     void goDataTableWidgetRequested();
     void finishMainWindowRequested();
-private slots:
-    void on_pushButtonImprimir_clicked();
+    void goDataTableWidgetAndResearchRequested();
 private:
     Ui::WelcomeWidget *ui;
 };

@@ -27,6 +27,7 @@ private slots:
     void goToDataTableWidget();
     void finish();
     void goToWelcomeWidget();
+    void goToDataTableWidgetAndResearch();
 
 };
 

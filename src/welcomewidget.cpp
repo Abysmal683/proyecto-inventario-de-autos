@@ -9,13 +9,12 @@ WelcomeWidget::WelcomeWidget(QWidget *parent)
     connect(ui->pushButtonRegistros, &QPushButton::clicked, this, [=](){
         emit goDataTableWidgetRequested();
     });
+    connect(ui->pushButtonBuscar, &QPushButton::clicked, this, [=](){
+        emit goDataTableWidgetAndResearchRequested();
+    });
     connect(ui->pushButtonFinalizar,&QPushButton::clicked,this,[=](){
        emit finishMainWindowRequested();
     });
-}
-void WelcomeWidget::on_pushButtonImprimir_clicked(){
-    ImprimirDialog imprimirDialog(this);
-    imprimirDialog.exec();
 }
 WelcomeWidget::~WelcomeWidget()
 {
