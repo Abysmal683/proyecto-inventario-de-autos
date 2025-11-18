@@ -31,7 +31,7 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>0</y>
+          <y>-107</y>
           <width>255</width>
           <height>398</height>
          </rect>
@@ -175,7 +175,7 @@
           </widget>
          </item>
          <item row="7" column="0">
-          <widget class="QLabel" name="labelMatricula_2">
+          <widget class="QLabel" name="labelMotor">
            <property name="text">
             <string>Motor</string>
            </property>
@@ -198,21 +198,21 @@
           </widget>
          </item>
          <item row="8" column="0">
-          <widget class="QLabel" name="labelMatricula_3">
+          <widget class="QLabel" name="labelKilometraje">
            <property name="text">
             <string>Kilometraje</string>
            </property>
           </widget>
          </item>
          <item row="9" column="0">
-          <widget class="QLabel" name="labelMatricula_4">
+          <widget class="QLabel" name="labelPuertas">
            <property name="text">
             <string>Puertas</string>
            </property>
           </widget>
          </item>
          <item row="10" column="0">
-          <widget class="QLabel" name="labelMatricula_5">
+          <widget class="QLabel" name="labelCarroceria">
            <property name="text">
             <string>Carroceria</string>
            </property>

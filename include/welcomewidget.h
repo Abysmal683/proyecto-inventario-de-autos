@@ -19,6 +19,7 @@ signals:
     void goDataTableWidgetRequested();
     void finishMainWindowRequested();
     void goDataTableWidgetAndResearchRequested();
+    void goNewRegistrationWidgetRequested();
 private:
     Ui::WelcomeWidget *ui;
 };

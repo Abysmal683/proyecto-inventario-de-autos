@@ -6,6 +6,9 @@ NewRegistrationWidget::NewRegistrationWidget(QWidget *parent)
     , ui(new Ui::NewRegistrationWidget)
 {
     ui->setupUi(this);
+    connect(ui->pushButtonCancelar, &QPushButton::clicked, this, [=](){
+        emit goWelcomeWidgetRequested();
+    });
 }
 
 NewRegistrationWidget::~NewRegistrationWidget()

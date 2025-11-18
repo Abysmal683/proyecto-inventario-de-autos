@@ -15,6 +15,9 @@ WelcomeWidget::WelcomeWidget(QWidget *parent)
     connect(ui->pushButtonFinalizar,&QPushButton::clicked,this,[=](){
        emit finishMainWindowRequested();
     });
+    connect(ui->pushButtonNuevoRegistro,&QPushButton::clicked,this,[=](){
+       emit goNewRegistrationWidgetRequested();
+    });
 }
 WelcomeWidget::~WelcomeWidget()
 {

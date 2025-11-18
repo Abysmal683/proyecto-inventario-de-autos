@@ -5,7 +5,7 @@
 
 class WelcomeWidget;
 class DataTableWidget;
-
+class NewRegistrationWidget;
 namespace Ui {
 class MainWindow;
 }
@@ -23,11 +23,13 @@ private:
 
     WelcomeWidget *welcomeWidget;
     DataTableWidget *dataTableWidget;
+    NewRegistrationWidget *newRegistrationWidget;
 private slots:
     void goToDataTableWidget();
     void finish();
     void goToWelcomeWidget();
     void goToDataTableWidgetAndResearch();
+    void goToNewRegistrationWidget();
 
 };
 

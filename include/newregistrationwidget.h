@@ -14,7 +14,8 @@ class NewRegistrationWidget : public QWidget
 public:
     explicit NewRegistrationWidget(QWidget *parent = nullptr);
     ~NewRegistrationWidget();
-
+signals:
+    void goWelcomeWidgetRequested();
 private:
     Ui::NewRegistrationWidget *ui;
 };
