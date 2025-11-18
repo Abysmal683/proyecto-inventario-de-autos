@@ -19,7 +19,7 @@
      <item>
       <widget class="QScrollArea" name="scrollAreaCaracteristicas">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -45,6 +45,12 @@
         <layout class="QFormLayout" name="formLayout_3">
          <item row="0" column="0">
           <widget class="QLabel" name="labelPropietario">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>Propietario</string>
            </property>
@@ -52,6 +58,12 @@
          </item>
          <item row="0" column="1">
           <widget class="QComboBox" name="comboBoxPropietario">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="editable">
             <bool>true</bool>
            </property>
@@ -62,6 +74,12 @@
          </item>
          <item row="1" column="0">
           <widget class="QLabel" name="labelVin">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>VIN</string>
            </property>
@@ -69,6 +87,12 @@
          </item>
          <item row="1" column="1">
           <widget class="QComboBox" name="comboBoxVin">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="editable">
             <bool>true</bool>
            </property>
@@ -79,6 +103,12 @@
          </item>
          <item row="2" column="0">
           <widget class="QLabel" name="labelMarca">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>Marca</string>
            </property>
@@ -86,6 +116,12 @@
          </item>
          <item row="2" column="1">
           <widget class="QComboBox" name="comboBoxMarca">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="editable">
             <bool>true</bool>
            </property>
@@ -96,6 +132,12 @@
          </item>
          <item row="3" column="0">
           <widget class="QLabel" name="labelModelo">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>Modelo</string>
            </property>
@@ -103,6 +145,12 @@
          </item>
          <item row="3" column="1">
           <widget class="QComboBox" name="comboBoxModelo">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="editable">
             <bool>true</bool>
            </property>
@@ -113,6 +161,12 @@
          </item>
          <item row="4" column="0">
           <widget class="QLabel" name="labelEpoca">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>Epoca</string>
            </property>
@@ -120,6 +174,12 @@
          </item>
          <item row="4" column="1">
           <widget class="QComboBox" name="comboBoxEpoca">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="editable">
             <bool>true</bool>
            </property>
@@ -130,6 +190,12 @@
          </item>
          <item row="5" column="0">
           <widget class="QLabel" name="labelColor">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>Color</string>
            </property>
@@ -138,7 +204,7 @@
          <item row="5" column="1">
           <widget class="QComboBox" name="comboBoxColor">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -153,6 +219,12 @@
          </item>
          <item row="6" column="0">
           <widget class="QLabel" name="labelMatricula">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>Placa</string>
            </property>
@@ -161,7 +233,7 @@
          <item row="6" column="1">
           <widget class="QComboBox" name="comboBoxPlaca">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -176,6 +248,12 @@
          </item>
          <item row="7" column="0">
           <widget class="QLabel" name="labelMotor">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>Motor</string>
            </property>
@@ -184,7 +262,7 @@
          <item row="7" column="1">
           <widget class="QComboBox" name="comboBoxMotor">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -199,6 +277,12 @@
          </item>
          <item row="8" column="0">
           <widget class="QLabel" name="labelKilometraje">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>Kilometraje</string>
            </property>
@@ -246,6 +330,12 @@
          </item>
          <item row="8" column="1">
           <widget class="QSpinBox" name="spinBoxKilometraje">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="maximum">
             <number>1000000</number>
            </property>
@@ -311,7 +401,7 @@
      <item alignment="Qt::AlignmentFlag::AlignHCenter|Qt::AlignmentFlag::AlignVCenter">
       <widget class="QLabel" name="labelImagen">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
