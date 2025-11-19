@@ -10,6 +10,7 @@ int main(int argc, char *argv[])
     }
     MainWindow mainWindow;
     mainWindow.setWindowTitle("Inventario de Autos");
+    mainWindow.resize(600,400);
     mainWindow.show();
     return app.exec();
 }

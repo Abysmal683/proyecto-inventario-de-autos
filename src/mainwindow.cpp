@@ -35,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
             this, &MainWindow::goToWelcomeWidget);
     // Mostrar la pantalla inicial
     ui->stackedWidgetPantallas->setCurrentWidget(welcomeWidget);
+    resize(600,400);
 }
 
 MainWindow::~MainWindow()
