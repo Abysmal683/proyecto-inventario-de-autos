@@ -2,14 +2,21 @@
 #include <QSqlQuery>
 #include <QFile>
 #include <QTextStream>
-#include <QDebug>
 #include <QSqlError>
+#include <QDir>
 DatabaseManager::DatabaseManager() {
     // Usamos SQLite con Qt
     db = QSqlDatabase::addDatabase("QSQLITE");
-
+    QString dbDirectory = "DataBase";
+    QString dbPath = dbDirectory + "/inventario_autos.db";
+    QDir dir;
+    if (!dir.exists(dbDirectory)){
+        if(!dir.mkdir(dbDirectory)){
+            qWarning() << "no se pudo crear el directorio DataBase/";
+        }
+    }
     // Archivo de base de datos local
-    db.setDatabaseName("inventario_autos.db");
+    db.setDatabaseName(dbPath);
 }
 
 DatabaseManager& DatabaseManager::instance() {
@@ -20,11 +27,8 @@ DatabaseManager& DatabaseManager::instance() {
 bool DatabaseManager::initialize() {
     if (!db.open()) {
         qCritical() << "ERROR al abrir la base de datos:" << db.lastError().text();
-
         return false;
     }
-
-    qDebug() << "Base de datos abierta correctamente.";
 
     return createTables();
 }
