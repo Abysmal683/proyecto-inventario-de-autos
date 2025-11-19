@@ -20,9 +20,8 @@ CREATE TABLE IF NOT EXISTS vehiculos (
     propietario TEXT NOT NULL,        -- Dueño del vehículo
 
     foto BLOB,                        -- Foto en binario
-
-    estado TEXT NOT NULL
-        CHECK (estado IN ('Retirado','Almacenado')) -- Solo 2 estados válidos
+    estado INTEGER NOT NULL
+        CHECK (estado IN (0, 1)) -- 0 = Retirado, 1 = Almacenado
 );
 
 
