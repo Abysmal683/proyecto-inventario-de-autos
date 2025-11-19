@@ -14,7 +14,9 @@ class InfoDialog : public QDialog
 public:
     explicit InfoDialog(QWidget *parent = nullptr);
     ~InfoDialog();
-
+private slots:
+    void on_pushButtonRegresar_clicked();
+    void on_pushButtonImprimir_clicked();
 private:
     Ui::InfoDialog *ui;
 };

@@ -16,7 +16,8 @@ public:
     ~DataTableWidget();
 signals:
     void goWelcomeWidgetRequested();
-
+private slots:
+    void on_pushButtonDetalles_clicked();
 private:
     Ui::DataTableWidget *ui;
 };

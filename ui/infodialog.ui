@@ -410,7 +410,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButtonCancelar">
+      <widget class="QPushButton" name="pushButtonRegresar">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -462,7 +462,29 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButtonConfirmar">
+      <widget class="QPushButton" name="pushButtonImprimir">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Imprimir</string>
+       </property>
+       <property name="checkable">
+        <bool>false</bool>
+       </property>
+       <property name="autoRepeat">
+        <bool>false</bool>
+       </property>
+       <property name="autoExclusive">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonModificar">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -484,7 +506,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButtonConfirmar_2">
+      <widget class="QPushButton" name="pushButtonEliminarRegistro">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>

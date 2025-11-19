@@ -293,7 +293,7 @@
         <item row="11" column="1">
          <widget class="QCheckBox" name="checkBoxEstado">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
             <horstretch>1</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -415,6 +415,12 @@
         </item>
         <item row="8" column="1">
          <widget class="QSpinBox" name="spinBoxKilometraje">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="maximum">
            <number>10000</number>
           </property>
@@ -422,6 +428,12 @@
         </item>
         <item row="9" column="1">
          <widget class="QSpinBox" name="spinBoxPuertas">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="maximum">
            <number>10</number>
           </property>
