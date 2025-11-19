@@ -2,5 +2,6 @@
     <qresource lang="spanish" prefix="/">
         <file>icons/grillo.jpg</file>
         <file>images/buho.jpg</file>
+        <file>SQL/inicializacion_inventario_de_autos.sql</file>
     </qresource>
 </RCC>
