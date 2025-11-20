@@ -37,7 +37,7 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>0</y>
+          <y>-81</y>
           <width>270</width>
           <height>427</height>
          </rect>
@@ -261,25 +261,6 @@
            </property>
           </widget>
          </item>
-         <item row="6" column="1">
-          <widget class="QComboBox" name="comboBoxPlaca">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="editable">
-            <bool>true</bool>
-           </property>
-           <property name="maxVisibleItems">
-            <number>5</number>
-           </property>
-          </widget>
-         </item>
          <item row="5" column="1">
           <widget class="QComboBox" name="comboBoxColor">
            <property name="enabled">
@@ -356,25 +337,6 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
-          <widget class="QComboBox" name="comboBoxVin">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="editable">
-            <bool>true</bool>
-           </property>
-           <property name="maxVisibleItems">
-            <number>5</number>
-           </property>
-          </widget>
-         </item>
          <item row="0" column="1">
           <widget class="QComboBox" name="comboBoxPropietario">
            <property name="enabled">
@@ -411,6 +373,26 @@
            </property>
           </widget>
          </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="lineEditVin">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="clearButtonEnabled">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="1">
+          <widget class="QLineEdit" name="lineEditMatricula">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="clearButtonEnabled">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
       </widget>
@@ -435,10 +417,22 @@
      <item alignment="Qt::AlignmentFlag::AlignHCenter|Qt::AlignmentFlag::AlignVCenter">
       <widget class="QLabel" name="labelImagen">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>150</width>
+         <height>150</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>250</width>
+         <height>250</height>
+        </size>
        </property>
        <property name="text">
         <string/>

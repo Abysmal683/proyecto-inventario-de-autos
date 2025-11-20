@@ -30,14 +30,11 @@ DataTableWidget::DataTableWidget(QWidget *parent)
     ui->tableViewListaDeCarros->horizontalHeader()->setStretchLastSection(true);
 
     /* ---- Cargar combos desde BD ---- */
-    loadFilters();  // ⭐ FIX: llenar combos antes de filtrar
+    loadFilters();
 
     /* ---- Cargar la tabla inicial ---- */
     applyFilters();
 
-    /* ⭐ FIX: conexión correcta del selectionModel
-     * YA NO USAMOS modelReset, ahora se conecta UNA vez aquí
-     */
     connect(ui->tableViewListaDeCarros->selectionModel(),
             &QItemSelectionModel::currentRowChanged,
             this, &DataTableWidget::onRowSelected);
@@ -175,7 +172,6 @@ void DataTableWidget::applyFilters()
 
     ui->tableViewListaDeCarros->resizeColumnsToContents();
 
-    /* ⭐ FIX: cuando se carga un nuevo modelo, se debe volver a conectar el selectionModel */
     connect(ui->tableViewListaDeCarros->selectionModel(),
             &QItemSelectionModel::currentRowChanged,
             this, &DataTableWidget::onRowSelected);
