@@ -48,15 +48,13 @@ MainWindow::~MainWindow()
 //funciones que realiza las accones por las senales entrantes
 void MainWindow::goToDataTableWidget(){
     ui->stackedWidgetPantallas->setCurrentWidget(dataTableWidget);
-    dataTableWidget->clearFields();
-    dataTableWidget->loadFilters();
+    dataTableWidget->applyFilters();
 }
 void MainWindow::goToDataTableWidgetAndResearch(const QVariantMap &filtros)
 {
     ui->stackedWidgetPantallas->setCurrentWidget(dataTableWidget);
-    dataTableWidget->clearFields();
-    dataTableWidget->loadFilters();
     dataTableWidget->setFilters(filtros);
+
 }
 void MainWindow::goToWelcomeWidget(){
     ui->stackedWidgetPantallas->setCurrentWidget(welcomeWidget);

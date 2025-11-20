@@ -22,6 +22,7 @@ signals:
     void goWelcomeWidgetRequested();
 private slots:
     void on_pushButtonDetalles_clicked();
+    void onRowSelected(const QModelIndex &current, const QModelIndex &);
 
 private:
     Ui::DataTableWidget *ui;

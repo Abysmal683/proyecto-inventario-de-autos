@@ -23,12 +23,18 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <item alignment="Qt::AlignmentFlag::AlignTop">
-      <widget class="QLabel" name="imagenLogo">
+      <widget class="QLabel" name="labelImagen">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>150</width>
+         <height>150</height>
+        </size>
        </property>
        <property name="maximumSize">
         <size>
@@ -446,16 +452,16 @@
       </layout>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButtonRegresar">
+      <widget class="QPushButton" name="pushButtonBuscar">
        <property name="text">
-        <string>Regresar</string>
+        <string>Buscar</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButtonBuscar">
+      <widget class="QPushButton" name="pushButtonRegresar">
        <property name="text">
-        <string>Buscar</string>
+        <string>Regresar</string>
        </property>
       </widget>
      </item>

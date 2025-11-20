@@ -2,190 +2,285 @@
 #include "ui_datatablewidget.h"
 #include "infodialog.h"
 #include "databasemanager.h"
+
 #include <QSqlQueryModel>
 #include <QSqlQuery>
+#include <QPixmap>
+#include <QDebug>
+#include <QSqlError>
+
+/* ===========================================================
+ * Constructor
+ * =========================================================== */
 DataTableWidget::DataTableWidget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::DataTableWidget)
+    , m_model(new QSqlQueryModel(this))
 {
     ui->setupUi(this);
-    loadFilters();
-    connect(ui->pushButtonRegresar, &QPushButton::clicked, this, [=](){
+
+    /* ---- CONFIG TABLA ---- */
+    ui->tableViewListaDeCarros->setModel(m_model);
+    ui->tableViewListaDeCarros->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tableViewListaDeCarros->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->tableViewListaDeCarros->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableViewListaDeCarros->setAlternatingRowColors(true);
+    ui->tableViewListaDeCarros->setSortingEnabled(true);
+    ui->tableViewListaDeCarros->verticalHeader()->hide();
+    ui->tableViewListaDeCarros->horizontalHeader()->setStretchLastSection(true);
+
+    /* ---- Cargar combos desde BD ---- */
+    loadFilters();  // ⭐ FIX: llenar combos antes de filtrar
+
+    /* ---- Cargar la tabla inicial ---- */
+    applyFilters();
+
+    /* ⭐ FIX: conexión correcta del selectionModel
+     * YA NO USAMOS modelReset, ahora se conecta UNA vez aquí
+     */
+    connect(ui->tableViewListaDeCarros->selectionModel(),
+            &QItemSelectionModel::currentRowChanged,
+            this, &DataTableWidget::onRowSelected);
+
+    /* ---- Botón Buscar ---- */
+    connect(ui->pushButtonBuscar, &QPushButton::clicked,
+            this, &DataTableWidget::applyFilters);
+
+    /* ---- Regresar ---- */
+    connect(ui->pushButtonRegresar, &QPushButton::clicked, this, [this]{
         clearFields();
         emit goWelcomeWidgetRequested();
     });
-
 }
 
 DataTableWidget::~DataTableWidget()
 {
     delete ui;
 }
-void DataTableWidget::on_pushButtonDetalles_clicked(){
+
+/* ===========================================================
+ * Botón detalles
+ * =========================================================== */
+void DataTableWidget::on_pushButtonDetalles_clicked()
+{
+    QModelIndex idx = ui->tableViewListaDeCarros->currentIndex();
+    if (!idx.isValid())
+        return;
+
     InfoDialog infoDialog(this);
-    infoDialog.setWindowTitle("Detalles-Extras");
+    infoDialog.setWindowTitle("Detalles - Extras");
     infoDialog.exec();
 }
-void DataTableWidget::setFilters(const QVariantMap &filtros)
+
+/* ===========================================================
+ * Recibir filtros desde WelcomeWidget
+ * =========================================================== */
+void DataTableWidget::setFilters(const QVariantMap &f)
 {
-    auto setCombo = [&](QComboBox *c, const QString &key){
-        if (!c) return;
-        if (!filtros.contains(key)) return;
-
-        QString val = filtros[key].toString().trimmed();
-        if (val.isEmpty()) return;
-
+    auto combo = [&](QComboBox *c, const QString &key){
+        if (!f.contains(key)) return;
+        QString val = f.value(key).toString();
         int idx = c->findText(val);
         if (idx >= 0) c->setCurrentIndex(idx);
     };
 
-    // Combos de vehiculos
-    setCombo(ui->comboBoxMarca,       "marca");
-    setCombo(ui->comboBoxModelo,      "modelo");
-    setCombo(ui->comboBoxEpoca,       "epoca");
-    setCombo(ui->comboBoxColor,       "color");
-    setCombo(ui->comboBoxPropietario, "propietario");
+    combo(ui->comboBoxMarca,       "marca");
+    combo(ui->comboBoxModelo,      "modelo");
+    combo(ui->comboBoxEpoca,       "epoca");
+    combo(ui->comboBoxColor,       "color");
+    combo(ui->comboBoxPropietario, "propietario");
+    combo(ui->comboBoxMotor,       "motor");
+    combo(ui->comboBoxCarroceria,  "carroceria");
 
-    // Combos de datos técnicos
-    setCombo(ui->comboBoxMotor,       "motor");
-    setCombo(ui->comboBoxCarroceria,  "carroceria");
+    ui->lineEditVin->setText(f.value("vin").toString());
+    ui->lineEditMatricula->setText(f.value("placa").toString());
 
-    // Line edits
-    if (filtros.contains("vin"))
-        ui->lineEditVin->setText(filtros["vin"].toString());
+    if (f.contains("estado"))
+        ui->checkBoxEstado->setChecked(f.value("estado").toBool());
 
-    if (filtros.contains("placa"))
-        ui->lineEditMatricula->setText(filtros["placa"].toString());
-
-    // Checkbox
-    if (filtros.contains("estado"))
-        ui->checkBoxEstado->setChecked(filtros["estado"].toBool());
+    applyFilters();   // ⭐ FIX: antes no aplicaba los filtros recibidos
 }
+
+/* ===========================================================
+ * Aplicar filtros
+ * =========================================================== */
 void DataTableWidget::applyFilters()
 {
-    QString queryStr =
-        "SELECT "
-        "vehiculos.vin, "
-        "vehiculos.marca, "
-        "vehiculos.modelo, "
-        "vehiculos.epoca, "
-        "vehiculos.color, "
-        "vehiculos.placa, "
-        "vehiculos.propietario, "
-        "vehiculos.estado, "
-        "datos_tecnicos.motor, "
-        "datos_tecnicos.carroceria, "
-        "datos_tecnicos.kilometraje, "
-        "datos_tecnicos.puertas "
-        "FROM vehiculos "
-        "LEFT JOIN datos_tecnicos ON vehiculos.vin = datos_tecnicos.vin ";
+    QString sql =
+        "SELECT v.vin, v.marca, v.modelo, v.epoca, v.color, "
+        "v.placa, v.propietario, v.estado, "
+        "d.motor, d.carroceria, d.kilometraje, d.puertas "
+        "FROM vehiculos v "
+        "LEFT JOIN datos_tecnicos d ON v.vin = d.vin ";
 
-    QStringList conditions;
-    QVariantList params;
+    QStringList where;
+    QList<QVariant> args;
 
-    auto addIf = [&](const QString &col, const QVariant &val){
-        if (val.isNull()) return;
-        if (val.toString().trimmed().isEmpty()) return;
-        conditions << QString("%1 = ?").arg(col);
-        params << val;
+    auto add = [&](const QString &col, const QVariant &val){
+        if (!val.toString().trimmed().isEmpty()) {
+            where << col + " = ?";
+            args << val;
+        }
     };
 
-    addIf("vehiculos.vin",        ui->lineEditVin->text());
-    addIf("vehiculos.placa",      ui->lineEditMatricula->text());
-    addIf("vehiculos.marca",      ui->comboBoxMarca->currentText());
-    addIf("vehiculos.modelo",     ui->comboBoxModelo->currentText());
-    addIf("vehiculos.epoca",      ui->comboBoxEpoca->currentText());
-    addIf("vehiculos.color",      ui->comboBoxColor->currentText());
-    addIf("vehiculos.propietario",ui->comboBoxPropietario->currentText());
+    add("v.vin",            ui->lineEditVin->text());
+    add("v.placa",          ui->lineEditMatricula->text());
+    add("v.marca",          ui->comboBoxMarca->currentText());
+    add("v.modelo",         ui->comboBoxModelo->currentText());
+    add("v.epoca",          ui->comboBoxEpoca->currentText());
+    add("v.color",          ui->comboBoxColor->currentText());
+    add("v.propietario",    ui->comboBoxPropietario->currentText());
+    add("d.motor",          ui->comboBoxMotor->currentText());
+    add("d.carroceria",     ui->comboBoxCarroceria->currentText());
 
-    // Estado solo se filtra si está activo
     if (ui->checkBoxEstado->isChecked())
-        addIf("vehiculos.estado", 1);
+        add("v.estado", 1);
 
-    // Datos técnicos
-    addIf("datos_tecnicos.motor",      ui->comboBoxMotor->currentText());
-    addIf("datos_tecnicos.carroceria", ui->comboBoxCarroceria->currentText());
-    if (!conditions.isEmpty())
-        queryStr += " WHERE " + conditions.join(" AND ");
+    if (!where.isEmpty())
+        sql += " WHERE " + where.join(" AND ");
 
-    queryStr += " ORDER BY vehiculos.marca, vehiculos.modelo";
+    sql += " ORDER BY v.marca, v.modelo";
 
-    if (!m_model)
-        m_model = new QSqlQueryModel(this);
+    /* ---- Ejecutar consulta ---- */
+    QSqlQuery query(DatabaseManager::instance().getDatabase());
+    query.prepare(sql);
 
-    QSqlQuery q(DatabaseManager::instance().getDatabase());
-    q.prepare(queryStr);
+    for (const QVariant &v : args)
+        query.addBindValue(v);
 
-    for (const QVariant &v : params)
-        q.addBindValue(v);
+    if (!query.exec()) {
+        qDebug() << "SQL ERROR:" << query.lastError();
+        qDebug() << "QUERY:" << sql;
+        return;
+    }
 
-    m_model->setQuery(std::move(q));
-    ui->tableViewListaDeCarros->setModel(m_model);
+    m_model->setQuery(std::move(query));
+
+    if (m_model->lastError().isValid()) {
+        qDebug() << "Model error:" << m_model->lastError();
+        return;
+    }
+
+    qDebug() << "FILAS CARGADAS:" << m_model->rowCount();
+
+    /* ---- Encabezados ---- */
+    const QStringList headers = {
+        "VIN", "Marca", "Modelo", "Época", "Color",
+        "Placa", "Propietario", "Estado",
+        "Motor", "Carrocería", "KM", "Puertas"
+    };
+
+    for (int i = 0; i < headers.size(); ++i)
+        m_model->setHeaderData(i, Qt::Horizontal, headers[i]);
+
+    ui->tableViewListaDeCarros->resizeColumnsToContents();
+
+    /* ⭐ FIX: cuando se carga un nuevo modelo, se debe volver a conectar el selectionModel */
+    connect(ui->tableViewListaDeCarros->selectionModel(),
+            &QItemSelectionModel::currentRowChanged,
+            this, &DataTableWidget::onRowSelected);
+    /* ---- Seleccionar automáticamente la primera fila si existe ---- */
+    if (m_model->rowCount() > 0) {
+        QModelIndex firstIndex = m_model->index(0, 0);
+        ui->tableViewListaDeCarros->setCurrentIndex(firstIndex);
+        onRowSelected(firstIndex, QModelIndex()); // disparar carga de imagen
+    } else {
+        ui->labelImagen->setText("Sin imagen"); // si no hay filas
+    }
 }
 
+/* ===========================================================
+ * Cargar combos con valores DISTINCT
+ * =========================================================== */
+void DataTableWidget::loadFilters()
+{
+    auto fill = [&](QComboBox *c, const QString &table, const QString &col){
+        QString old = c->currentText();           // ← preserva valor
+        c->blockSignals(true);                     // ← bloquea señales
+        c->clear();
+        c->addItem("");
+
+        QSqlQuery q(DatabaseManager::instance().getDatabase());
+        QString str = QString("SELECT DISTINCT %1 FROM %2 "
+                              "WHERE %1 IS NOT NULL AND %1 != '' ORDER BY %1")
+                          .arg(col, table);
+
+        if (!q.exec(str)) {
+            qDebug() << "ERROR FILTER QUERY:" << q.lastError();
+        } else {
+            while (q.next()) {
+                QString val = q.value(0).toString();
+                if (!val.isEmpty())
+                    c->addItem(val);
+            }
+        }
+
+        int idx = c->findText(old);               // ← reestablece valor previo
+        c->setCurrentIndex(idx >= 0 ? idx : 0);
+        c->blockSignals(false);
+    };
+
+    fill(ui->comboBoxMarca,       "vehiculos", "marca");
+    fill(ui->comboBoxModelo,      "vehiculos", "modelo");
+    fill(ui->comboBoxEpoca,       "vehiculos", "epoca");
+    fill(ui->comboBoxColor,       "vehiculos", "color");
+    fill(ui->comboBoxPropietario, "vehiculos", "propietario");
+
+    fill(ui->comboBoxMotor,       "datos_tecnicos", "motor");
+    fill(ui->comboBoxCarroceria,  "datos_tecnicos", "carroceria");
+}
+
+/* ===========================================================
+ * Selección de fila → cargar imagen
+ * =========================================================== */
+void DataTableWidget::onRowSelected(const QModelIndex &current, const QModelIndex &)
+{
+    if (!current.isValid()) return;
+
+    QString vin = m_model->data(m_model->index(current.row(), 0)).toString();
+
+    QSqlQuery q(DatabaseManager::instance().getDatabase());
+    q.prepare("SELECT foto FROM vehiculos WHERE vin = ?");
+    q.addBindValue(vin);
+
+    if (!q.exec() || !q.next()) {
+        ui->labelImagen->setText("Sin imagen");
+        return;
+    }
+
+    QPixmap px;
+    px.loadFromData(q.value(0).toByteArray());
+
+    if (px.isNull()) {
+        ui->labelImagen->setText("Sin imagen");
+        return;
+    }
+
+    ui->labelImagen->setPixmap(
+        px.scaled(ui->labelImagen->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation)
+        );
+}
+
+/* ===========================================================
+ * Limpiar campos
+ * =========================================================== */
 void DataTableWidget::clearFields()
 {
     ui->lineEditVin->clear();
     ui->lineEditMatricula->clear();
-    auto resetCombo = [&](QComboBox *c){
-        int idx = c->findText("");
-        if (idx >= 0)
-            c->setCurrentIndex(idx);
-        else {
-            c->insertItem(0, "");
-            c->setCurrentIndex(0);
-        }
+
+    auto reset = [&](QComboBox *c){
+        c->setCurrentIndex(0);
+     //   c->addItem("");
     };
 
-    resetCombo(ui->comboBoxPropietario);
-    resetCombo(ui->comboBoxMarca);
-    resetCombo(ui->comboBoxModelo);
-    resetCombo(ui->comboBoxEpoca);
-    resetCombo(ui->comboBoxColor);
-    resetCombo(ui->comboBoxMotor);
-    resetCombo(ui->comboBoxCarroceria);
+    reset(ui->comboBoxMarca);
+    reset(ui->comboBoxModelo);
+    reset(ui->comboBoxEpoca);
+    reset(ui->comboBoxColor);
+    reset(ui->comboBoxPropietario);
+    reset(ui->comboBoxMotor);
+    reset(ui->comboBoxCarroceria);
 
-    ui->spinBoxKilometraje->setValue(0);
-    ui->spinBoxPuertas->setValue(0);
     ui->checkBoxEstado->setChecked(false);
-}
-
-void DataTableWidget::loadFilters()
-{
-    QSqlQuery query(DatabaseManager::instance().getDatabase());
-
-    auto fillCombo = [&](QComboBox *combo, const QString &table, const QString &column)
-    {
-        combo->blockSignals(true);
-        combo->clear();
-        combo->addItem("");  // siempre primera opción vacía
-
-        const QString sql = QStringLiteral(
-                                "SELECT DISTINCT %1 FROM %2 "
-                                "WHERE %1 IS NOT NULL AND %1 != '' "
-                                "ORDER BY %1"
-                                ).arg(column, table);
-
-        if (query.exec(sql)) {
-            while (query.next()) {
-                const QString value = query.value(0).toString();
-                if (!value.isEmpty())
-                    combo->addItem(value);
-            }
-        }
-
-        combo->setCurrentIndex(0);
-        combo->blockSignals(false);
-    };
-
-    // Vehículos
-    fillCombo(ui->comboBoxPropietario, "vehiculos", "propietario");
-    fillCombo(ui->comboBoxMarca,       "vehiculos", "marca");
-    fillCombo(ui->comboBoxModelo,      "vehiculos", "modelo");
-    fillCombo(ui->comboBoxEpoca,       "vehiculos", "epoca");
-    fillCombo(ui->comboBoxColor,       "vehiculos", "color");
-
-    // Datos técnicos
-    fillCombo(ui->comboBoxMotor,       "datos_tecnicos", "motor");
-    fillCombo(ui->comboBoxCarroceria,  "datos_tecnicos", "carroceria");
 }
