@@ -3,23 +3,21 @@
 #include "infodialog.h"
 #include "databasemanager.h"
 
-#include <QSqlQueryModel>
 #include <QSqlQuery>
+#include <QSqlError>
+#include <QSqlRecord>
 #include <QPixmap>
 #include <QDebug>
-#include <QSqlError>
+#include <QHeaderView>
 
-/* ===========================================================
- * Constructor
- * =========================================================== */
 DataTableWidget::DataTableWidget(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::DataTableWidget)
-    , m_model(new QSqlQueryModel(this))
+    : QWidget(parent),
+    ui(new Ui::DataTableWidget),
+    m_model(new QSqlQueryModel(this))
 {
     ui->setupUi(this);
 
-    /* ---- CONFIG TABLA ---- */
+    // Configuración de la tabla
     ui->tableViewListaDeCarros->setModel(m_model);
     ui->tableViewListaDeCarros->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableViewListaDeCarros->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -29,21 +27,21 @@ DataTableWidget::DataTableWidget(QWidget *parent)
     ui->tableViewListaDeCarros->verticalHeader()->hide();
     ui->tableViewListaDeCarros->horizontalHeader()->setStretchLastSection(true);
 
-    /* ---- Cargar combos desde BD ---- */
+    // Cargar valores únicos a los combos
     loadFilters();
 
-    /* ---- Cargar la tabla inicial ---- */
+    // Tabla inicial
     applyFilters();
 
+    // Conectar selección de fila
     connect(ui->tableViewListaDeCarros->selectionModel(),
             &QItemSelectionModel::currentRowChanged,
             this, &DataTableWidget::onRowSelected);
 
-    /* ---- Botón Buscar ---- */
-    connect(ui->pushButtonBuscar, &QPushButton::clicked,
-            this, &DataTableWidget::applyFilters);
+    // Botón Buscar
+    connect(ui->pushButtonBuscar, &QPushButton::clicked, this, &DataTableWidget::applyFilters);
 
-    /* ---- Regresar ---- */
+    // Botón Regresar
     connect(ui->pushButtonRegresar, &QPushButton::clicked, this, [this]{
         clearFields();
         emit goWelcomeWidgetRequested();
@@ -55,30 +53,20 @@ DataTableWidget::~DataTableWidget()
     delete ui;
 }
 
-/* ===========================================================
- * Botón detalles
- * =========================================================== */
-void DataTableWidget::on_pushButtonDetalles_clicked()
-{
-    QModelIndex idx = ui->tableViewListaDeCarros->currentIndex();
-    if (!idx.isValid())
-        return;
-
-    InfoDialog infoDialog(this);
-    infoDialog.setWindowTitle("Detalles - Extras");
-    infoDialog.exec();
-}
-
-/* ===========================================================
- * Recibir filtros desde WelcomeWidget
- * =========================================================== */
+// -------------------- FILTROS --------------------
 void DataTableWidget::setFilters(const QVariantMap &f)
 {
+    m_currentFilters = f;
+
+    // Primero cargar valores únicos en combos si no se ha hecho
+    loadFilters();
+
     auto combo = [&](QComboBox *c, const QString &key){
         if (!f.contains(key)) return;
         QString val = f.value(key).toString();
         int idx = c->findText(val);
         if (idx >= 0) c->setCurrentIndex(idx);
+        else c->setCurrentIndex(0); // fallback a vacío
     };
 
     combo(ui->comboBoxMarca,       "marca");
@@ -95,12 +83,10 @@ void DataTableWidget::setFilters(const QVariantMap &f)
     if (f.contains("estado"))
         ui->checkBoxEstado->setChecked(f.value("estado").toBool());
 
-    applyFilters();   // ⭐ FIX: antes no aplicaba los filtros recibidos
+    // Aplica los filtros
+    applyFilters();
 }
 
-/* ===========================================================
- * Aplicar filtros
- * =========================================================== */
 void DataTableWidget::applyFilters()
 {
     QString sql =
@@ -114,7 +100,8 @@ void DataTableWidget::applyFilters()
     QList<QVariant> args;
 
     auto add = [&](const QString &col, const QVariant &val){
-        if (!val.toString().trimmed().isEmpty()) {
+        if (!val.toString().trimmed().isEmpty())
+        {
             where << col + " = ?";
             args << val;
         }
@@ -138,7 +125,6 @@ void DataTableWidget::applyFilters()
 
     sql += " ORDER BY v.marca, v.modelo";
 
-    /* ---- Ejecutar consulta ---- */
     QSqlQuery query(DatabaseManager::instance().getDatabase());
     query.prepare(sql);
 
@@ -146,8 +132,7 @@ void DataTableWidget::applyFilters()
         query.addBindValue(v);
 
     if (!query.exec()) {
-        qDebug() << "SQL ERROR:" << query.lastError();
-        qDebug() << "QUERY:" << sql;
+        qDebug() << "SQL ERROR:" << query.lastError() << "QUERY:" << sql;
         return;
     }
 
@@ -158,9 +143,6 @@ void DataTableWidget::applyFilters()
         return;
     }
 
-    qDebug() << "FILAS CARGADAS:" << m_model->rowCount();
-
-    /* ---- Encabezados ---- */
     const QStringList headers = {
         "VIN", "Marca", "Modelo", "Época", "Color",
         "Placa", "Propietario", "Estado",
@@ -172,46 +154,42 @@ void DataTableWidget::applyFilters()
 
     ui->tableViewListaDeCarros->resizeColumnsToContents();
 
-    connect(ui->tableViewListaDeCarros->selectionModel(),
-            &QItemSelectionModel::currentRowChanged,
-            this, &DataTableWidget::onRowSelected);
-    /* ---- Seleccionar automáticamente la primera fila si existe ---- */
-    if (m_model->rowCount() > 0) {
+    // Seleccionar primera fila automáticamente
+    if (m_model->rowCount() > 0)
+    {
         QModelIndex firstIndex = m_model->index(0, 0);
         ui->tableViewListaDeCarros->setCurrentIndex(firstIndex);
-        onRowSelected(firstIndex, QModelIndex()); // disparar carga de imagen
-    } else {
-        ui->labelImagen->setText("Sin imagen"); // si no hay filas
+        onRowSelected(firstIndex, QModelIndex());
+    }
+    else
+    {
+        ui->labelImagen->setText("Sin imagen");
     }
 }
 
-/* ===========================================================
- * Cargar combos con valores DISTINCT
- * =========================================================== */
+// -------------------- COMBOS --------------------
 void DataTableWidget::loadFilters()
 {
     auto fill = [&](QComboBox *c, const QString &table, const QString &col){
-        QString old = c->currentText();           // ← preserva valor
-        c->blockSignals(true);                     // ← bloquea señales
+        QString old = c->currentText();
+        c->blockSignals(true);
         c->clear();
         c->addItem("");
 
         QSqlQuery q(DatabaseManager::instance().getDatabase());
-        QString str = QString("SELECT DISTINCT %1 FROM %2 "
-                              "WHERE %1 IS NOT NULL AND %1 != '' ORDER BY %1")
+        QString str = QString("SELECT DISTINCT %1 FROM %2 WHERE %1 IS NOT NULL AND %1 != '' ORDER BY %1")
                           .arg(col, table);
-
-        if (!q.exec(str)) {
-            qDebug() << "ERROR FILTER QUERY:" << q.lastError();
-        } else {
-            while (q.next()) {
-                QString val = q.value(0).toString();
-                if (!val.isEmpty())
-                    c->addItem(val);
+        if (q.exec(str))
+        {
+            while (q.next())
+            {
+                c->addItem(q.value(0).toString());
             }
+        } else {
+            qDebug() << "ERROR FILTER QUERY:" << q.lastError();
         }
 
-        int idx = c->findText(old);               // ← reestablece valor previo
+        int idx = c->findText(old);
         c->setCurrentIndex(idx >= 0 ? idx : 0);
         c->blockSignals(false);
     };
@@ -221,54 +199,17 @@ void DataTableWidget::loadFilters()
     fill(ui->comboBoxEpoca,       "vehiculos", "epoca");
     fill(ui->comboBoxColor,       "vehiculos", "color");
     fill(ui->comboBoxPropietario, "vehiculos", "propietario");
-
     fill(ui->comboBoxMotor,       "datos_tecnicos", "motor");
     fill(ui->comboBoxCarroceria,  "datos_tecnicos", "carroceria");
 }
 
-/* ===========================================================
- * Selección de fila → cargar imagen
- * =========================================================== */
-void DataTableWidget::onRowSelected(const QModelIndex &current, const QModelIndex &)
-{
-    if (!current.isValid()) return;
-
-    QString vin = m_model->data(m_model->index(current.row(), 0)).toString();
-
-    QSqlQuery q(DatabaseManager::instance().getDatabase());
-    q.prepare("SELECT foto FROM vehiculos WHERE vin = ?");
-    q.addBindValue(vin);
-
-    if (!q.exec() || !q.next()) {
-        ui->labelImagen->setText("Sin imagen");
-        return;
-    }
-
-    QPixmap px;
-    px.loadFromData(q.value(0).toByteArray());
-
-    if (px.isNull()) {
-        ui->labelImagen->setText("Sin imagen");
-        return;
-    }
-
-    ui->labelImagen->setPixmap(
-        px.scaled(ui->labelImagen->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation)
-        );
-}
-
-/* ===========================================================
- * Limpiar campos
- * =========================================================== */
+// -------------------- LIMPIAR CAMPOS --------------------
 void DataTableWidget::clearFields()
 {
     ui->lineEditVin->clear();
     ui->lineEditMatricula->clear();
 
-    auto reset = [&](QComboBox *c){
-        c->setCurrentIndex(0);
-     //   c->addItem("");
-    };
+    auto reset = [&](QComboBox *c){ c->setCurrentIndex(0); };
 
     reset(ui->comboBoxMarca);
     reset(ui->comboBoxModelo);
@@ -279,4 +220,65 @@ void DataTableWidget::clearFields()
     reset(ui->comboBoxCarroceria);
 
     ui->checkBoxEstado->setChecked(false);
+}
+
+// -------------------- IMAGEN --------------------
+void DataTableWidget::onRowSelected(const QModelIndex &current, const QModelIndex &)
+{
+    if (!current.isValid()) return;
+
+    QString vin = m_model->data(m_model->index(current.row(), 0)).toString();
+
+    QSqlQuery q(DatabaseManager::instance().getDatabase());
+    q.prepare("SELECT foto FROM vehiculos WHERE vin = ?");
+    q.addBindValue(vin);
+
+    if (!q.exec() || !q.next())
+    {
+        ui->labelImagen->setText("Sin imagen");
+        return;
+    }
+
+    QPixmap px;
+    px.loadFromData(q.value(0).toByteArray());
+
+    if (px.isNull())
+    {
+        ui->labelImagen->setText("Sin imagen");
+        return;
+    }
+
+    ui->labelImagen->setPixmap(px.scaled(ui->labelImagen->size(),
+                                         Qt::KeepAspectRatio,
+                                         Qt::SmoothTransformation));
+}
+
+// -------------------- INFO DIALOG --------------------
+// src/datatablewidget.cpp (fragmento)
+void DataTableWidget::abrirInfoDialog()
+{
+    QModelIndex index = ui->tableViewListaDeCarros->currentIndex();
+    if (!index.isValid()) return;
+
+    // VIN está en la columna 0 del modelo SQL actual
+    QString vin = m_model->data(m_model->index(index.row(), 0)).toString();
+
+    InfoDialog dlg(this);
+    dlg.setVehicleData(vin);
+
+    // Conectar señales para refrescar la tabla si hubo cambios
+    connect(&dlg, &InfoDialog::vehicleUpdated, this, [this](const QString &){
+        this->applyFilters();
+    });
+    connect(&dlg, &InfoDialog::vehicleDeleted, this, [this](const QString &){
+        this->applyFilters();
+    });
+
+    // Abrir modal
+    dlg.exec();
+}
+
+void DataTableWidget::on_pushButtonDetalles_clicked()
+{
+    abrirInfoDialog();
 }

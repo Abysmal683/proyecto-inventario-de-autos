@@ -55,19 +55,21 @@ void NewRegistrationWidget::onPushButtonSeleccionarImagenClicked()
 void NewRegistrationWidget::onPushButtonConfirmarClicked()
 {
     QString vin = ui->lineEditVin->text().trimmed();
+    QString placa = ui->lineEditMatricula->text().trimmed();
+
+    if(vin.isEmpty() || placa.isEmpty()) {
+        QMessageBox::warning(this, tr("Campos incompletos"),
+                             tr("VIN y Placa son obligatorios."));
+        return;
+    }
+
+    // Datos generales
     QString marca = ui->comboBoxMarca->currentText().trimmed();
     QString modelo = ui->comboBoxModelo->currentText().trimmed();
     int epoca = ui->comboBoxEpoca->currentText().toInt();
     QString color = ui->comboBoxColor->currentText().trimmed();
-    QString placa = ui->lineEditMatricula->text().trimmed();
     QString propietario = ui->comboBoxPropietario->currentText().trimmed();
-    bool estado = true; // Por defecto
-
-    if(vin.isEmpty() || placa.isEmpty()) {
-        QMessageBox::warning(this, tr("Campos incompletos"),
-            tr("VIN y Placa son obligatorios."));
-        return;
-    }
+    bool estado = true;
 
     bool successVehicle = DatabaseManager::instance().addVehicle(
         vin, marca, modelo, epoca, color, placa, propietario, vehicleImage, estado
@@ -75,11 +77,11 @@ void NewRegistrationWidget::onPushButtonConfirmarClicked()
 
     if(!successVehicle) {
         QMessageBox::critical(this, tr("Error"),
-            tr("No se pudo agregar el vehículo."));
+                              tr("No se pudo agregar el vehículo."));
         return;
     }
 
-    // Datos técnicos
+    // Datos técnicos opcionales
     QString motor = ui->comboBoxMotor->currentText().trimmed();
     int kilometraje = ui->spinBoxKilometraje->value();
     int puertas = ui->spinBoxPuertas->value();
@@ -92,10 +94,11 @@ void NewRegistrationWidget::onPushButtonConfirmarClicked()
 
     if(!successTechnical) {
         QMessageBox::critical(this, tr("Error"),
-           tr("No se pudo agregar los datos técnicos."));
+                              tr("No se pudieron agregar los datos técnicos."));
         return;
     }
 
+    // Emitir señal para refrescar DataTable
     QVariantMap newVehicle;
     newVehicle["vin"] = vin;
     newVehicle["marca"] = marca;
@@ -107,8 +110,11 @@ void NewRegistrationWidget::onPushButtonConfirmarClicked()
 
     emit vehicleAdded(newVehicle);
 
+    // Confirmación final
     QMessageBox::information(this, tr("Éxito"),
-        tr("Vehículo agregado correctamente."));
+                             tr("Vehículo agregado correctamente."));
+
+    // Volver al Welcome
     emit goWelcomeWidgetRequested();
 }
 

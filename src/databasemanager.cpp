@@ -184,7 +184,7 @@ bool DatabaseManager::deleteVehicle(const QString& vin)
 }
 //datos tecnicos
 bool DatabaseManager::addTechnicalData(const QString& vin, const QString& motor, int kilometraje, int puertas,
-     const QString& carroceria, const QString& detalles_adicionales)
+                                       const QString& carroceria, const QString& detalles_adicionales)
 {
     QSqlQuery query(db);
     query.prepare(R"(
@@ -193,11 +193,14 @@ bool DatabaseManager::addTechnicalData(const QString& vin, const QString& motor,
     )");
 
     query.bindValue(":vin", vin);
-    query.bindValue(":motor", motor);
+
+    // Si el campo opcional está vacío, enviar NULL
+    query.bindValue(":motor", motor.isEmpty() ? QVariant(QVariant::String) : motor);
+    query.bindValue(":carroceria", carroceria.isEmpty() ? QVariant(QVariant::String) : carroceria);
+    query.bindValue(":detalles_adicionales", detalles_adicionales.isEmpty() ? QVariant(QVariant::String) : detalles_adicionales);
+
     query.bindValue(":kilometraje", kilometraje);
     query.bindValue(":puertas", puertas);
-    query.bindValue(":carroceria", carroceria);
-    query.bindValue(":detalles_adicionales", detalles_adicionales);
 
     if (!query.exec()) {
         qCritical() << "Error insertando datos técnicos:" << query.lastError().text();
@@ -205,7 +208,6 @@ bool DatabaseManager::addTechnicalData(const QString& vin, const QString& motor,
     }
     return true;
 }
-
 QVariantMap DatabaseManager::getTechnicalData(const QString& vin)
 {
     QVariantMap result;
