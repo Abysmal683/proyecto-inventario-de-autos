@@ -37,8 +37,8 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>0</y>
-          <width>300</width>
+          <y>-116</y>
+          <width>306</width>
           <height>398</height>
          </rect>
         </property>
@@ -426,6 +426,18 @@
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>100</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>250</width>
+         <height>250</height>
+        </size>
        </property>
        <property name="text">
         <string/>

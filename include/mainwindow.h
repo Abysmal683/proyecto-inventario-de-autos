@@ -28,7 +28,7 @@ private slots:
     void goToDataTableWidget();
     void finish();
     void goToWelcomeWidget();
-    void goToDataTableWidgetAndResearch();
+    void goToDataTableWidgetAndResearch(const QVariantMap &filtros);
     void goToNewRegistrationWidget();
 
 };

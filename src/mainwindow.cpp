@@ -20,10 +20,13 @@ MainWindow::MainWindow(QWidget *parent)
     // Señal desde WelcomeWidget → cambiar pantalla a datatable
     connect(welcomeWidget, &WelcomeWidget::goDataTableWidgetRequested,
             this, &MainWindow::goToDataTableWidget);
+
     connect(welcomeWidget, &WelcomeWidget::goDataTableWidgetAndResearchRequested,
             this, &MainWindow::goToDataTableWidgetAndResearch);
+
     connect(welcomeWidget, &WelcomeWidget::goNewRegistrationWidgetRequested,
             this, &MainWindow::goToNewRegistrationWidget);
+
     // Señal desde register → cambiar pantalla a welcome
     connect(dataTableWidget, &DataTableWidget::goWelcomeWidgetRequested,
             this, &MainWindow::goToWelcomeWidget);
@@ -45,16 +48,27 @@ MainWindow::~MainWindow()
 //funciones que realiza las accones por las senales entrantes
 void MainWindow::goToDataTableWidget(){
     ui->stackedWidgetPantallas->setCurrentWidget(dataTableWidget);
+    dataTableWidget->clearFields();
+    dataTableWidget->loadFilters();
 }
-void MainWindow::goToDataTableWidgetAndResearch(){
-// ui->stackedWidgetPantallas->setCurrentWidget(dataTableWidget);
-    goToDataTableWidget();
+void MainWindow::goToDataTableWidgetAndResearch(const QVariantMap &filtros)
+{
+    ui->stackedWidgetPantallas->setCurrentWidget(dataTableWidget);
+    dataTableWidget->clearFields();
+    dataTableWidget->loadFilters();
+    dataTableWidget->setFilters(filtros);
 }
 void MainWindow::goToWelcomeWidget(){
     ui->stackedWidgetPantallas->setCurrentWidget(welcomeWidget);
+    welcomeWidget->clearSearchFields();
+    welcomeWidget->loadFilters();
+
 }
 void MainWindow::goToNewRegistrationWidget(){
     ui->stackedWidgetPantallas->setCurrentWidget(newRegistrationWidget);
+    newRegistrationWidget->clearFields();
+    newRegistrationWidget->loadCompleterData();
+    newRegistrationWidget->loadReferenceData();
 }
 void MainWindow::finish(){
     close();

@@ -14,7 +14,8 @@ class WelcomeWidget : public QWidget
 public:
     explicit WelcomeWidget(QWidget *parent = nullptr);
     ~WelcomeWidget();
-
+    void loadFilters();
+    void clearSearchFields();
 signals:
     void goDataTableWidgetRequested();
     void finishMainWindowRequested();
@@ -24,7 +25,7 @@ private slots:
     void onPushButtonBuscarClicked();
 private:
     Ui::WelcomeWidget *ui;
-    void loadFilters();
+
 };
 
 #endif // WELCOMEWIDGET_H

@@ -16,6 +16,10 @@ class NewRegistrationWidget : public QWidget
 public:
     explicit NewRegistrationWidget(QWidget *parent = nullptr);
     ~NewRegistrationWidget();
+    void clearFields();
+    void loadReferenceData();
+    void setupCompleters();
+    void loadCompleterData();
 
 signals:
     void goWelcomeWidgetRequested();
@@ -30,9 +34,7 @@ private:
     QByteArray vehicleImage;
     QCompleter *vinCompleter;
     QCompleter *placaCompleter;
-    void loadReferenceData();
-    void setupCompleters();
-    void loadCompleterData();
+
 };
 
 #endif // NEWREGISTRATIONWIDGET_H

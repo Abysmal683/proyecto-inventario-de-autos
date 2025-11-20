@@ -12,6 +12,7 @@ NewRegistrationWidget::NewRegistrationWidget(QWidget *parent)
     : QWidget(parent), ui(new Ui::NewRegistrationWidget)
 {
     ui->setupUi(this);
+    clearFields();
     loadReferenceData();
     connect(ui->pushButtonCancelar, &QPushButton::clicked, this, [=](){
         emit goWelcomeWidgetRequested();
@@ -134,23 +135,89 @@ void NewRegistrationWidget::loadCompleterData()
 }
 void NewRegistrationWidget::loadReferenceData()
 {
-    QSqlQuery query(DatabaseManager::instance().getDatabase());
+    QSqlDatabase db = DatabaseManager::instance().getDatabase();
+    QSqlQuery query(db);
 
-    auto fillCombo = [&](QComboBox* combo, const QString& column){
-        query.exec(QString("SELECT DISTINCT %1 FROM vehiculos ORDER BY %1").arg(column));
+    // Helper para cargar combos desde consultas
+    auto fillComboQuery = [&](QComboBox* combo, const QString& sql)
+    {
+        QString old = combo->currentText();
+        combo->blockSignals(true);
         combo->clear();
-        while(query.next()) {
-            QString value = query.value(0).toString();
-            if (!value.isEmpty())
-                combo->addItem(value);
+        combo->addItem("");
+
+        query.exec(sql);
+        while (query.next()) {
+            QString v = query.value(0).toString();
+            if (!v.isEmpty())
+                combo->addItem(v);
         }
+
+        int idx = combo->findText(old);
+        combo->setCurrentIndex(idx >= 0 ? idx : 0);
+        combo->blockSignals(false);
     };
 
-    fillCombo(ui->comboBoxMarca, "marca");
-    fillCombo(ui->comboBoxModelo, "modelo");
-    fillCombo(ui->comboBoxEpoca, "epoca");
-    fillCombo(ui->comboBoxColor, "color");
-    fillCombo(ui->comboBoxMotor, "motor");
-    fillCombo(ui->comboBoxCarroceria, "carroceria");
-    fillCombo(ui->comboBoxPropietario, "propietario");
+    // --- Datos de vehiculos ---
+    fillComboQuery(ui->comboBoxMarca,
+                   "SELECT DISTINCT marca FROM vehiculos "
+                   "WHERE marca != '' ORDER BY marca");
+
+    fillComboQuery(ui->comboBoxModelo,
+                   "SELECT DISTINCT modelo FROM vehiculos "
+                   "WHERE modelo != '' ORDER BY modelo");
+
+    fillComboQuery(ui->comboBoxEpoca,
+                   "SELECT DISTINCT epoca FROM vehiculos "
+                   "WHERE epoca IS NOT NULL AND epoca != '' ORDER BY epoca");
+
+    fillComboQuery(ui->comboBoxColor,
+                   "SELECT DISTINCT color FROM vehiculos "
+                   "WHERE color != '' ORDER BY color");
+
+    fillComboQuery(ui->comboBoxPropietario,
+                   "SELECT DISTINCT propietario FROM vehiculos "
+                   "WHERE propietario != '' ORDER BY propietario");
+
+    // --- Datos técnicos ---
+    fillComboQuery(ui->comboBoxMotor,
+                   "SELECT DISTINCT motor FROM datos_tecnicos "
+                   "WHERE motor != '' ORDER BY motor");
+
+    fillComboQuery(ui->comboBoxCarroceria,
+                   "SELECT DISTINCT carroceria FROM datos_tecnicos "
+                   "WHERE carroceria != '' ORDER BY carroceria");
+}
+void NewRegistrationWidget::clearFields(){
+    // LineEdits
+    ui->lineEditVin->clear();
+    ui->lineEditMatricula->clear();
+    ui->lineEditDetalles->clear();
+
+    // ComboBoxes -> ponemos en -1 o agregamos opción vacía y seleccionamos índice 0
+    auto clearCombo = [&](QComboBox *c){
+        // Si tiene item vacío en la posición 0, seleccionamos 0; si no, deseleccionamos
+        if (c->findText("") == -1) {
+            c->insertItem(0, "");
+        }
+        c->setCurrentIndex(0);
+    };
+
+    clearCombo(ui->comboBoxMarca);
+    clearCombo(ui->comboBoxModelo);
+    clearCombo(ui->comboBoxEpoca);
+    clearCombo(ui->comboBoxColor);
+    clearCombo(ui->comboBoxMotor);
+    clearCombo(ui->comboBoxCarroceria);
+    clearCombo(ui->comboBoxPropietario);
+
+    // Spinners
+    ui->spinBoxKilometraje->setValue(0);
+    ui->spinBoxPuertas->setValue(0);
+
+    // Imagen y buffer
+    vehicleImage.clear();
+    QPixmap defaultImg(":/images/buho.jpg");
+    ui->labelImagen->setPixmap(defaultImg);
+
 }
