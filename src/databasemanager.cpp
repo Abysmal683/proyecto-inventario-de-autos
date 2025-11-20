@@ -74,8 +74,8 @@ QSqlDatabase& DatabaseManager::getDatabase() {
 }
 // Cambiar el tipo de estado a bool
 bool DatabaseManager::addVehicle(const QString& vin, const QString& marca, const QString& modelo, int epoca,
-                                 const QString& color, const QString& placa, const QString& propietario,
-                                 const QByteArray& foto, bool estado) // <- CAMBIO A BOOL
+     const QString& color, const QString& placa, const QString& propietario,
+     const QByteArray& foto, bool estado) // <- CAMBIO A BOOL
 {
     QSqlQuery query(db);
     query.prepare(R"(
@@ -184,7 +184,7 @@ bool DatabaseManager::deleteVehicle(const QString& vin)
 }
 //datos tecnicos
 bool DatabaseManager::addTechnicalData(const QString& vin, const QString& motor, int kilometraje, int puertas,
-                                       const QString& carroceria, const QString& detalles_adicionales)
+     const QString& carroceria, const QString& detalles_adicionales)
 {
     QSqlQuery query(db);
     query.prepare(R"(
@@ -273,4 +273,31 @@ bool DatabaseManager::deleteTechnicalData(int id)
         return false;
     }
     return true;
+}
+QStringList DatabaseManager::getAllVINs()
+{
+    QStringList list;
+    QSqlQuery query(db);
+    if(query.exec("SELECT vin FROM vehiculos")) {
+        while(query.next()) {
+            list.append(query.value(0).toString());
+        }
+    } else {
+        qCritical() << "Error obteniendo VINs:" << query.lastError().text();
+    }
+    return list;
+}
+
+QStringList DatabaseManager::getAllPlacas()
+{
+    QStringList list;
+    QSqlQuery query(db);
+    if(query.exec("SELECT placa FROM vehiculos")) {
+        while(query.next()) {
+            list.append(query.value(0).toString());
+        }
+    } else {
+        qCritical() << "Error obteniendo Placas:" << query.lastError().text();
+    }
+    return list;
 }

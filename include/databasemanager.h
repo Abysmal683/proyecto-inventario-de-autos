@@ -14,8 +14,8 @@ public:
     QSqlDatabase& getDatabase();            // Obtener referencia a la BD
     // Vehículos
     bool addVehicle(const QString& vin, const QString& marca, const QString& modelo, int epoca,
-                    const QString& color, const QString& placa, const QString& propietario,
-                    const QByteArray& foto, const bool estado);
+        const QString& color, const QString& placa, const QString& propietario,
+        const QByteArray& foto, const bool estado);
 
     QVariantMap getVehicle(const QString& vin);    // Devuelve un mapa con todos los campos
     QList<QVariantMap> getAllVehicles();
@@ -24,12 +24,15 @@ public:
     bool deleteVehicle(const QString& vin);
     // Datos técnicos
     bool addTechnicalData(const QString& vin, const QString& motor, int kilometraje, int puertas,
-                          const QString& carroceria, const QString& detalles_adicionales);
+        const QString& carroceria, const QString& detalles_adicionales);
 
     QVariantMap getTechnicalData(const QString& vin);
     QList<QVariantMap> getAllTechnicalData();
     bool updateTechnicalData(int id, const QVariantMap& campos);
     bool deleteTechnicalData(int id);
+    // Completers
+    QStringList getAllVINs();
+    QStringList getAllPlacas();
 private:
     DatabaseManager();                      // Constructor privado
     bool createTables();                    // Ejecuta el schema.sql

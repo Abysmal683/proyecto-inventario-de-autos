@@ -18,10 +18,13 @@ public:
 signals:
     void goDataTableWidgetRequested();
     void finishMainWindowRequested();
-    void goDataTableWidgetAndResearchRequested();
+    void goDataTableWidgetAndResearchRequested(const QVariantMap &filtros);
     void goNewRegistrationWidgetRequested();
+private slots:
+    void onPushButtonBuscarClicked();
 private:
     Ui::WelcomeWidget *ui;
+    void loadFilters();
 };
 
 #endif // WELCOMEWIDGET_H
