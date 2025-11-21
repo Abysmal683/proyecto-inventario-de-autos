@@ -46,12 +46,43 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayoutPrevisualizacion">
      <item>
-      <widget class="QGraphicsView" name="graphicsViewPrevisualizacion"/>
+      <widget class="QGraphicsView" name="graphicsViewPrevisualizacion">
+       <property name="minimumSize">
+        <size>
+         <width>150</width>
+         <height>150</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::Shape::StyledPanel</enum>
+       </property>
+       <property name="transformationAnchor">
+        <enum>QGraphicsView::ViewportAnchor::AnchorUnderMouse</enum>
+       </property>
+       <property name="resizeAnchor">
+        <enum>QGraphicsView::ViewportAnchor::AnchorUnderMouse</enum>
+       </property>
+       <property name="viewportUpdateMode">
+        <enum>QGraphicsView::ViewportUpdateMode::SmartViewportUpdate</enum>
+       </property>
+      </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayoutBotones">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <widget class="QPushButton" name="pushButtonImprimir">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
           <string>Imprimir</string>
          </property>
@@ -59,6 +90,12 @@
        </item>
        <item>
         <widget class="QPushButton" name="pushButtonCancelar">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
           <string>Cancelar</string>
          </property>

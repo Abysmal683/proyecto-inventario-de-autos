@@ -1,4 +1,3 @@
-// src/infodialog.cpp (fragmentos relevantes)
 #include "infodialog.h"
 #include "ui_infodialog.h"
 #include "imprimirdialog.h"
@@ -12,6 +11,7 @@
 #include <QComboBox>
 #include <QPixmap>
 #include <QDebug>
+#include <QImage>
 
 InfoDialog::InfoDialog(QWidget *parent)
     : QDialog(parent),
@@ -22,7 +22,6 @@ InfoDialog::InfoDialog(QWidget *parent)
     if (parent)
         move(parent->geometry().center() - rect().center());
 
-    // Cargar combos (dejamos esto, los combos están bien)
     loadCombo(ui->comboBoxMarca, "vehiculos", "marca");
     loadCombo(ui->comboBoxModelo, "vehiculos", "modelo");
     loadCombo(ui->comboBoxEpoca, "vehiculos", "epoca");
@@ -32,10 +31,6 @@ InfoDialog::InfoDialog(QWidget *parent)
     loadCombo(ui->comboBoxMotor, "datos_tecnicos", "motor");
     loadCombo(ui->comboBoxCarroceria, "datos_tecnicos", "carroceria");
 
-    // -- IMPORTANTE: NO conectar aquí el clicked a on_pushButtonSeleccionarImagen_clicked
-    // Si la función se llama on_pushButtonSeleccionarImagen_clicked(), Qt la llama automáticamente.
-    // Evita duplicados.
-
     enableEditing(false);
 }
 
@@ -43,12 +38,11 @@ InfoDialog::~InfoDialog()
 {
     delete ui;
 }
-// --------------------- Cargar datos del vehículo ---------------------
+
 void InfoDialog::setVehicleData(const QString &vin)
 {
-    m_vin = vin; // Guardamos el VIN como identificador único
+    m_vin = vin;
 
-    // Obtener datos de la base de datos
     QVariantMap vehiculo = DatabaseManager::instance().getVehicle(vin);
     QVariantMap tecnico  = DatabaseManager::instance().getTechnicalData(vin);
 
@@ -57,49 +51,80 @@ void InfoDialog::setVehicleData(const QString &vin)
         return;
     }
 
-    // Datos del vehículo
-    ui->lineEditVin->setText(vehiculo.value("vin").toString());
-    ui->lineEditMatricula->setText(vehiculo.value("placa").toString());
-    ui->comboBoxMarca->setCurrentText(vehiculo.value("marca").toString());
-    ui->comboBoxModelo->setCurrentText(vehiculo.value("modelo").toString());
-    ui->comboBoxEpoca->setCurrentText(QString::number(vehiculo.value("epoca").toInt()));
-    ui->comboBoxColor->setCurrentText(vehiculo.value("color").toString());
-    ui->comboBoxPropietario->setCurrentText(vehiculo.value("propietario").toString());
-    ui->checkBoxEstado->setChecked(vehiculo.value("estado").toBool());
+    ui->lineEditVin->setText(vehiculo["vin"].toString());
+    ui->lineEditMatricula->setText(vehiculo["placa"].toString());
+    ui->comboBoxMarca->setCurrentText(vehiculo["marca"].toString());
+    ui->comboBoxModelo->setCurrentText(vehiculo["modelo"].toString());
+    ui->comboBoxEpoca->setCurrentText(QString::number(vehiculo["epoca"].toInt()));
+    ui->comboBoxColor->setCurrentText(vehiculo["color"].toString());
+    ui->comboBoxPropietario->setCurrentText(vehiculo["propietario"].toString());
+    ui->checkBoxEstado->setChecked(vehiculo["estado"].toBool());
 
-    // Datos técnicos
-    ui->comboBoxMotor->setCurrentText(tecnico.value("motor").toString());
-    ui->spinBoxKilometraje->setValue(tecnico.value("kilometraje").toInt());
-    ui->spinBoxPuertas->setValue(tecnico.value("puertas").toInt());
-    ui->comboBoxCarroceria->setCurrentText(tecnico.value("carroceria").toString());
-    ui->lineEditDetalles->setText(tecnico.value("detalles_adicionales").toString());
+    ui->comboBoxMotor->setCurrentText(tecnico["motor"].toString());
+    ui->spinBoxKilometraje->setValue(tecnico["kilometraje"].toInt());
+    ui->spinBoxPuertas->setValue(tecnico["puertas"].toInt());
+    ui->comboBoxCarroceria->setCurrentText(tecnico["carroceria"].toString());
+    ui->lineEditDetalles->setText(tecnico["detalles_adicionales"].toString());
 
-    // Imagen
-    QByteArray img = vehiculo.value("foto").toByteArray();
-    setVehicleImage(img);
+    setVehicleImage(vehiculo["foto"].toByteArray());
 }
+
 void InfoDialog::setVehicleImage(const QByteArray &img)
 {
     if (!img.isEmpty()) {
-        currentImage = img; // Guardar la imagen
+        currentImage = img;
+
         QPixmap pix;
         pix.loadFromData(img);
-        ui->labelImagen->setPixmap(pix.scaled(ui->labelImagen->size(),
-                                              Qt::KeepAspectRatio,
-                                              Qt::SmoothTransformation));
+
+        ui->labelImagen->setPixmap(
+            pix.scaled(ui->labelImagen->size(),
+                       Qt::KeepAspectRatio,
+                       Qt::SmoothTransformation)
+            );
     } else {
         currentImage.clear();
         ui->labelImagen->setText("Sin imagen");
         ui->labelImagen->setPixmap(QPixmap());
     }
 }
-// --------------------- Seleccionar Imagen ---------------------
+
+// =============================================
+// GENERAR DATOS PARA PDF
+// =============================================
+VehiclePrintData InfoDialog::getPrintData() const
+{
+    VehiclePrintData d;
+
+    d.vin = ui->lineEditVin->text();
+    d.placa = ui->lineEditMatricula->text();
+    d.marca = ui->comboBoxMarca->currentText();
+    d.modelo = ui->comboBoxModelo->currentText();
+    d.epoca = ui->comboBoxEpoca->currentText();
+    d.color = ui->comboBoxColor->currentText();
+    d.propietario = ui->comboBoxPropietario->currentText();
+
+    d.motor = ui->comboBoxMotor->currentText();
+    d.kilometraje = QString::number(ui->spinBoxKilometraje->value());
+    d.puertas = QString::number(ui->spinBoxPuertas->value());
+    d.carroceria = ui->comboBoxCarroceria->currentText();
+    d.detalles = ui->lineEditDetalles->text();
+
+    d.estado = ui->checkBoxEstado->isChecked() ? "Activo" : "Inactivo";
+
+    if (!currentImage.isEmpty()) {
+        QPixmap pix;
+        pix.loadFromData(currentImage);
+        d.imagen = pix.toImage();
+    }
+
+    return d;
+}
+
 void InfoDialog::on_pushButtonSeleccionarImagen_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName(
-        this,
-        "Seleccionar Imagen",
-        "",
+        this, "Seleccionar Imagen", "",
         "Imagenes (*.png *.jpg *.bmp)");
 
     if (fileName.isEmpty()) return;
@@ -115,7 +140,6 @@ void InfoDialog::on_pushButtonSeleccionarImagen_clicked()
     setVehicleImage(bufferData);
 }
 
-// --------------------- Habilitar edición ---------------------
 void InfoDialog::enableEditing(bool enable)
 {
     ui->comboBoxMarca->setEnabled(enable);
@@ -135,10 +159,8 @@ void InfoDialog::enableEditing(bool enable)
     ui->pushButtonSeleccionarImagen->setEnabled(enable);
 }
 
-// --------------------- Guardar cambios ---------------------
 bool InfoDialog::saveChanges()
 {
-    // usa el VIN guardado al abrir
     QString vin = m_vin;
     if (vin.isEmpty()) return false;
 
@@ -170,13 +192,12 @@ bool InfoDialog::saveChanges()
     return true;
 }
 
-// --------------------- Botón Modificar ---------------------
 void InfoDialog::on_pushButtonModificar_clicked()
 {
     bool enable = ui->pushButtonModificar->isChecked();
     enableEditing(enable);
 
-    if (!enable) { // Guardar cambios
+    if (!enable) {
         if (!saveChanges()) {
             QMessageBox::critical(this, "Error", "No se pudieron guardar los cambios.");
         } else {
@@ -185,7 +206,6 @@ void InfoDialog::on_pushButtonModificar_clicked()
     }
 }
 
-// --------------------- Botón Eliminar ---------------------
 void InfoDialog::on_pushButtonEliminarRegistro_clicked()
 {
     QString vin = m_vin;
@@ -194,13 +214,11 @@ void InfoDialog::on_pushButtonEliminarRegistro_clicked()
         return;
     }
 
-    QMessageBox::StandardButton reply =
-        QMessageBox::question(this,
-                              "Confirmar eliminación",
+    if (QMessageBox::question(this, "Confirmar eliminación",
                               "¿Está seguro de eliminar este registro?",
-                              QMessageBox::Yes | QMessageBox::No);
-
-    if (reply != QMessageBox::Yes) return;
+                              QMessageBox::Yes | QMessageBox::No)
+        != QMessageBox::Yes)
+        return;
 
     bool ok1 = DatabaseManager::instance().deleteVehicle(vin);
     int idTec = DatabaseManager::instance().getTechnicalData(vin)["id"].toInt();
@@ -212,39 +230,48 @@ void InfoDialog::on_pushButtonEliminarRegistro_clicked()
     }
 
     emit vehicleDeleted(vin);
-    QMessageBox::information(this, "Listo", "Registro eliminado correctamente.");
+    QMessageBox::information(this, "Listo", "Registro eliminado.");
     accept();
 }
 
-// --------------------- Botón Regresar ---------------------
 void InfoDialog::on_pushButtonRegresar_clicked()
 {
     reject();
 }
 
-// --------------------- Botón Imprimir ---------------------
 void InfoDialog::on_pushButtonImprimir_clicked()
 {
-    ImprimirDialog imprimirDialog(this);
-    imprimirDialog.exec();
-}
+    VehiclePrintData data = getPrintData();
 
-// --------------------- Función para llenar combos ---------------------
+    ImprimirDialog dlg(this);
+    dlg.setContent(data);
+    dlg.exec();
+}
+// agrega esto en src/infodialog.cpp
+
+// ... (otros includes ya presentes)
+
 void InfoDialog::loadCombo(QComboBox* combo, const QString &table, const QString &col)
 {
     if (!combo) return;
 
+    QString old = combo->currentText();
+    combo->blockSignals(true);
     combo->clear();
     combo->addItem("");
 
-    QSqlQuery query(DatabaseManager::instance().getDatabase());
-    query.prepare(QString("SELECT DISTINCT %1 FROM %2 WHERE %1 IS NOT NULL AND %1 != '' ORDER BY %1")
-                      .arg(col, table));
-    if (query.exec()) {
-        while (query.next()) {
-            combo->addItem(query.value(0).toString());
+    QSqlQuery q(DatabaseManager::instance().getDatabase());
+    QString str = QString("SELECT DISTINCT %1 FROM %2 WHERE %1 IS NOT NULL AND %1 != '' ORDER BY %1")
+                      .arg(col, table);
+    if (q.exec(str)) {
+        while (q.next()) {
+            combo->addItem(q.value(0).toString());
         }
     } else {
-        qDebug() << "Error al cargar combo" << col << ":" << query.lastError();
+        qDebug() << "InfoDialog::loadCombo ERROR:" << q.lastError() << " QUERY:" << str;
     }
+
+    int idx = combo->findText(old);
+    combo->setCurrentIndex(idx >= 0 ? idx : 0);
+    combo->blockSignals(false);
 }

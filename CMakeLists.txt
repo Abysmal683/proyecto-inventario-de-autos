@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Habilita soporte para Qt (ajusta la versión que tengas instalada)
-find_package(Qt6 COMPONENTS Widgets REQUIRED Sql Gui Core)
+find_package(Qt6 COMPONENTS Widgets REQUIRED Sql Gui Core PrintSupport)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 # Salidas de binarios/librerías

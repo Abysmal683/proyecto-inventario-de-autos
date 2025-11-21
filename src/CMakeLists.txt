@@ -18,7 +18,7 @@ file(GLOB_RECURSE CPP_SOURCES CONFIGURE_DEPENDS
 file(GLOB_RECURSE HEADER_SOURCES CONFIGURE_DEPENDS
     ${CMAKE_SOURCE_DIR}/include/*.h
 )
-find_package(Qt6 COMPONENTS Widgets REQUIRED Sql Gui Core)
+find_package(Qt6 COMPONENTS Widgets REQUIRED Sql Gui Core PrintSupport)
 
 add_executable(${PROJECT_NAME}
     ${CPP_SOURCES}
@@ -31,4 +31,4 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_SOURCE_DIR}/include
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Sql)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Sql Qt6::PrintSupport)

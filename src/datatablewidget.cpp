@@ -268,9 +268,11 @@ void DataTableWidget::abrirInfoDialog()
 
     // Conectar señales para refrescar la tabla si hubo cambios
     connect(&dlg, &InfoDialog::vehicleUpdated, this, [this](const QString &){
+        this->loadFilters();
         this->applyFilters();
     });
     connect(&dlg, &InfoDialog::vehicleDeleted, this, [this](const QString &){
+        this->loadFilters();
         this->applyFilters();
     });
 
