@@ -277,6 +277,7 @@ void DataTableWidget::abrirInfoDialog()
     });
 
     // Abrir modal
+    dlg.setWindowTitle("Informacion Extra");
     dlg.exec();
 }
 

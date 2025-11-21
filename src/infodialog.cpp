@@ -245,6 +245,7 @@ void InfoDialog::on_pushButtonImprimir_clicked()
 
     ImprimirDialog dlg(this);
     dlg.setContent(data);
+    dlg.setWindowTitle("Imprimir");
     dlg.exec();
 }
 // agrega esto en src/infodialog.cpp
